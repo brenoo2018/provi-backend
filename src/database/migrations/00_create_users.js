@@ -3,8 +3,8 @@ exports.up = async (knex) => {
     table.uuid('uuid').primary();
     table.string('email').unique().notNullable();
     table.string('password').notNullable();
-    table.string('firstname');
-    table.string('lastname');
+    table.string('first_name');
+    table.string('last_name');
     table.string('cpf').unique();
     table.string('birthday');
     table.integer('phone_number').unique();
