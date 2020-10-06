@@ -13,7 +13,7 @@ usersRouter.post('/create', async (request, response) => {
     const checkUsersExists = await knex('users').where({ email }).first();
 
     if (checkUsersExists) {
-      return response.json({ message: 'User already exists' });
+      return response.status(400).json({ message: 'User already exists' });
     }
 
     const passwordHash = await hash(password, 8);
@@ -26,7 +26,7 @@ usersRouter.post('/create', async (request, response) => {
 
     return response.json({ ok: true });
   } catch (error) {
-    return response.send({ message: error.message });
+    return response.status(400).json({ error: error.message });
   }
 });
 
