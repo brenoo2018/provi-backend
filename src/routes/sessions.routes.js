@@ -27,9 +27,9 @@ sessionsRouter.post('/create', async (request, response) => {
         .json({ message: 'Incorrect email/password combination' });
     }
 
-    const { uuid } = checkUsersExists;
+    const { uuid, created_at, updated_at } = checkUsersExists;
 
-    const user = { uuid, email };
+    const user = { uuid, email, created_at, updated_at };
 
     const { secret, expiresIn } = authConfig.jwt;
 
