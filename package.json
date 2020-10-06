@@ -18,7 +18,8 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.6",
     "sqlite3": "^5.0.0",
-    "uuidv4": "^6.2.4"
+    "uuidv4": "^6.2.4",
+    "yup": "^0.29.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

@@ -1,14 +1,28 @@
 const { Router } = require('express');
-const { isUuid, uuid: funcUuid } = require('uuidv4');
+const { uuid: funcUuid } = require('uuidv4');
+const Yup = require('yup');
 const { hash } = require('bcryptjs');
 
+const getValidationErrors = require('../utils/getValidationErrors');
 const knex = require('../database/connection');
-const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
 
 const usersRouter = Router();
 
 usersRouter.post('/create', async (request, response) => {
   try {
+    const schema = Yup.object().shape({
+      email: Yup.string()
+        .required('E-mail obrigatório')
+        .email('Digite um e-mail válido'),
+      password: Yup.string()
+        .min(6, 'Mínimo de 6 dígitos')
+        .required('Senha obrigatória'),
+    });
+
+    await schema.validate(request.body, {
+      abortEarly: false,
+    });
+
     const { email, password } = request.body;
 
     const trx = await knex.transaction();
@@ -38,85 +52,14 @@ usersRouter.post('/create', async (request, response) => {
 
     return response.json({ ok: true });
   } catch (error) {
-    return response.status(400).json({ error: error.message });
+    if (error instanceof Yup.ValidationError) {
+      const errors = getValidationErrors(error);
+
+      return response.json({ errors });
+    } else {
+      return response.status(400).json({ error: error.message });
+    }
   }
 });
-
-// usersRouter.post('/test', ensureAuthenticated, async (request, response) => {
-//   try {
-//     const { first_name, last_name } = request.body;
-//     const { user_uuid } = request.user;
-
-//     if (!user_uuid) {
-//       return response.status(400).json({ message: 'Uuid not found' });
-//     }
-
-//     if (!isUuid(user_uuid)) {
-//       return response.status(400).json({ message: 'Does not Uuid' });
-//     }
-
-//     const user = await knex('users').where({ uuid: user_uuid }).first();
-
-//     if (!user) {
-//       return response.status(400).json({ message: 'User does not exists' });
-//     }
-
-//     if (!user.first_name && !user.last_name) {
-//       await knex('users')
-//         .update({
-//           first_name,
-//           last_name,
-//           updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
-//         })
-//         .where({ uuid: user_uuid });
-//       const aftterUpdate = await knex('users')
-//         .where({ uuid: user_uuid })
-//         .first();
-
-//       return response.json({
-//         data: `${first_name} ${last_name}`,
-//         updated_at: aftterUpdate.updated_at,
-//       });
-//     }
-
-//     if (user.first_name === first_name && user.last_name === last_name) {
-//       await knex('users')
-//         .update({
-//           updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
-//         })
-//         .where({ uuid: user_uuid });
-
-//       const aftterUpdate = await knex('users')
-//         .where({ uuid: user_uuid })
-//         .first();
-
-//       return response.json({
-//         data: `${first_name} ${last_name}`,
-//         updated_at: aftterUpdate.updated_at,
-//       });
-//     }
-
-//     if (user.first_name !== first_name && user.last_name !== last_name) {
-//       await knex('users')
-//         .update({
-//           first_name,
-//           last_name,
-//           updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
-//         })
-//         .where({ uuid: user_uuid });
-
-//       const aftterUpdate = await knex('users')
-//         .where({ uuid: user_uuid })
-//         .first();
-
-//       return response.json({
-//         data: `${first_name} ${last_name}`,
-//         updated_at: aftterUpdate.updated_at,
-//       });
-//     }
-//   } catch (error) {
-//     return response.status(400).json({ error: error.message });
-//   }
-// });
 
 module.exports = usersRouter;
