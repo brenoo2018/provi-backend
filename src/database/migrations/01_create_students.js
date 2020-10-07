@@ -1,9 +1,9 @@
 exports.up = async (knex) =>
   knex.schema.createTable('students', (table) => {
     table.uuid('uuid').primary();
+    table.string('cpf');
     table.string('first_name');
     table.string('last_name');
-    table.string('cpf');
     table.string('birthday');
     table.integer('phone_number');
     table.string('cep');
