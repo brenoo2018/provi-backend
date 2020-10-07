@@ -3,9 +3,9 @@ exports.up = async (knex) =>
     table.uuid('uuid').primary();
     table.string('first_name');
     table.string('last_name');
-    table.string('cpf').unique();
+    table.string('cpf');
     table.string('birthday');
-    table.integer('phone_number').unique();
+    table.integer('phone_number');
     table.string('cep');
     table.string('street');
     table.integer('number');
