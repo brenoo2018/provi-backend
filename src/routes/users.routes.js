@@ -50,7 +50,7 @@ usersRouter.post('/create', async (request, response) => {
 
     await trx.commit();
 
-    return response.json({ ok: true });
+    return response.json({ success: true, next_end_point: 'sessions/create' });
   } catch (error) {
     if (error instanceof Yup.ValidationError) {
       const errors = getValidationErrors(error);
