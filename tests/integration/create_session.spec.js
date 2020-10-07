@@ -3,10 +3,6 @@ const app = require('../../src/app');
 const connection = require('../../src/database/connection');
 
 describe('CREATE SESSION', () => {
-  beforeEach(async () => {
-    await connection.migrate.latest();
-  });
-
   afterAll(async () => {
     await connection.destroy();
   });
@@ -18,5 +14,6 @@ describe('CREATE SESSION', () => {
 
     expect(response.body).toHaveProperty('user');
     expect(response.body).toHaveProperty('token');
+    console.log(response.body.token);
   });
 });

@@ -41,7 +41,6 @@ studentsRouter.post('/cpf', async (request, response) => {
     }
 
     if (!user.cpf) {
-      console.log('caiu aqui 1');
       await knex('students').insert({
         uuid: funcUuid(),
         cpf,
@@ -72,7 +71,6 @@ studentsRouter.post('/cpf', async (request, response) => {
     }
 
     if (user.cpf === cpf) {
-      console.log('caiu aqui 2');
       await knex('students')
         .update({
           updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -91,8 +89,6 @@ studentsRouter.post('/cpf', async (request, response) => {
     }
 
     if (user.cpf !== cpf) {
-      console.log('caiu aqui 3');
-
       await knex('students').insert({
         uuid: funcUuid(),
         cpf: cpf,
@@ -115,8 +111,6 @@ studentsRouter.post('/cpf', async (request, response) => {
         .where({ user_uuid })
         .first()
         .orderBy('updated_at', 'desc');
-
-      console.log(aftterUpdate);
 
       return response.json({
         data: cpf,
