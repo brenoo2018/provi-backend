@@ -14,8 +14,8 @@ describe('CREATE OR UPDATE FULL NAME', () => {
         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDIwOTcyMDMsImV4cCI6MTYwMjE4MzYwMywic3ViIjoiZDVmMDA0N2MtYjEzNS00MGJjLTg2YWYtNDk5N2YwOTIzYjY1In0.Z2-LaHC-90nhGHUIjm6MZzj7EMCrIk_AozrTIoM2j-c'
       )
       .send({
-        first_name: 'primeiro nome1',
-        last_name: 'segundo nome1',
+        first_name: 'primeiro nome',
+        last_name: 'segundo nome',
       });
 
     expect(response.body).toHaveProperty('data');
