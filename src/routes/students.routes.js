@@ -1,5 +1,7 @@
 const { Router } = require('express');
 const { isUuid, uuid: funcUuid } = require('uuidv4');
+const Yup = require('yup');
+const getValidationErrors = require('../utils/getValidationErrors');
 
 const knex = require('../database/connection');
 const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
@@ -10,8 +12,19 @@ studentsRouter.use(ensureAuthenticated);
 
 studentsRouter.post('/cpf', async (request, response) => {
   try {
+    const schema = Yup.object().shape({
+      cpf: Yup.string().matches(/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/, 'CPF inválido'),
+    });
+
+    await schema.validate(request.body, {
+      abortEarly: false,
+    });
+
     const { cpf } = request.body;
     const { user_uuid } = request.user;
+
+    let CpfClean = cpf;
+    CpfClean = CpfClean.replace(/\.|-/g, '');
 
     if (!user_uuid) {
       return response.status(400).json({ message: 'Uuid not found' });
@@ -31,7 +44,7 @@ studentsRouter.post('/cpf', async (request, response) => {
     }
 
     const findCpfUsers = await knex('students')
-      .where({ cpf })
+      .where({ cpf: CpfClean })
       .select(['cpf', 'user_uuid']);
 
     if (findCpfUsers.length > 0) {
@@ -43,7 +56,7 @@ studentsRouter.post('/cpf', async (request, response) => {
     if (!user.cpf) {
       await knex('students').insert({
         uuid: funcUuid(),
-        cpf,
+        cpf: CpfClean,
         first_name: user.first_name,
         last_name: user.last_name,
         birthday: user.birthday,
@@ -65,12 +78,12 @@ studentsRouter.post('/cpf', async (request, response) => {
         .orderBy('updated_at', 'desc');
 
       return response.json({
-        data: cpf,
+        data: CpfClean,
         updated_at: aftterUpdate.updated_at,
       });
     }
 
-    if (user.cpf === cpf) {
+    if (user.cpf === CpfClean) {
       await knex('students')
         .update({
           updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -83,15 +96,15 @@ studentsRouter.post('/cpf', async (request, response) => {
         .orderBy('updated_at', 'desc');
 
       return response.json({
-        data: cpf,
+        data: CpfClean,
         updated_at: aftterUpdate.updated_at,
       });
     }
 
-    if (user.cpf !== cpf) {
+    if (user.cpf !== CpfClean) {
       await knex('students').insert({
         uuid: funcUuid(),
-        cpf: cpf,
+        cpf: CpfClean,
         first_name: user.first_name,
         last_name: user.last_name,
         birthday: user.birthday,
@@ -113,12 +126,18 @@ studentsRouter.post('/cpf', async (request, response) => {
         .orderBy('updated_at', 'desc');
 
       return response.json({
-        data: cpf,
+        data: CpfClean,
         updated_at: aftterUpdate.updated_at,
       });
     }
   } catch (error) {
-    return response.status(400).json({ error: error.message });
+    if (error instanceof Yup.ValidationError) {
+      const errors = getValidationErrors(error);
+
+      return response.json({ errors });
+    } else {
+      return response.status(400).json({ error: error.message });
+    }
   }
 });
 
