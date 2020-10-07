@@ -1,10 +1,12 @@
 const { Router } = require('express');
 const { isUuid, uuid: funcUuid } = require('uuidv4');
 const Yup = require('yup');
-const getValidationErrors = require('../utils/getValidationErrors');
+const requestApi = require('axios');
 
 const knex = require('../database/connection');
 const ensureAuthenticated = require('../middlewares/ensureAuthenticated');
+const getValidationErrors = require('../utils/getValidationErrors');
+const app = require('../app');
 
 const studentsRouter = Router();
 
@@ -474,125 +476,140 @@ studentsRouter.post('/address', async (request, response) => {
       return response.status(400).json({ message: 'Uuid not found' });
     }
 
+    if (typeof number !== 'number') {
+      return response.status(400).json({ message: 'Only numbers' });
+    }
+
     if (!isUuid(user_uuid)) {
       return response.status(400).json({ message: 'Does not Uuid' });
     }
 
-    const user = await knex('students')
-      .where({ user_uuid })
-      .first()
-      .orderBy('updated_at', 'desc');
+    const responseApi = await requestApi.get(
+      `https://brasilapi.com.br/api/cep/v1/${cep}`
+    );
 
-    if (!user) {
-      return response.status(400).json({ message: 'User does not exists' });
-    }
-
-    if (
-      !user.cep &&
-      !user.street &&
-      !user.number &&
-      !user.complement &&
-      !user.state &&
-      !user.city
-    ) {
-      await knex('students').insert({
-        uuid: funcUuid(),
-        first_name: user.first_name,
-        last_name: user.last_name,
-        cpf: user.cpf,
-        birthday: user.birthday,
-        phone_number: user.phone_number,
-        cep,
-        street,
-        number,
-        complement,
-        state,
-        city,
-        user_uuid,
-        created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
-        updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
-      });
-
-      const aftterUpdate = await knex('students')
+    if (responseApi.data) {
+      const user = await knex('students')
         .where({ user_uuid })
         .first()
         .orderBy('updated_at', 'desc');
 
-      const data = { cep, street, number, complement, state, city };
+      if (!user) {
+        return response.status(400).json({ message: 'User does not exists' });
+      }
 
-      return response.json({
-        data,
-        updated_at: aftterUpdate.updated_at,
-      });
-    }
-
-    if (
-      user.cep === cep &&
-      user.street === street &&
-      user.number === number &&
-      user.complement === complement &&
-      user.state === state &&
-      user.city === city
-    ) {
-      await knex('students')
-        .update({
+      if (
+        !user.cep &&
+        !user.street &&
+        !user.number &&
+        !user.complement &&
+        !user.state &&
+        !user.city
+      ) {
+        await knex('students').insert({
+          uuid: funcUuid(),
+          first_name: user.first_name,
+          last_name: user.last_name,
+          cpf: user.cpf,
+          birthday: user.birthday,
+          phone_number: user.phone_number,
+          cep,
+          street,
+          number,
+          complement,
+          state,
+          city,
+          user_uuid,
+          created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
           updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
-        })
-        .where({ uuid: user.uuid, user_uuid });
+        });
 
-      const aftterUpdate = await knex('students')
-        .where({ user_uuid })
-        .first()
-        .orderBy('updated_at', 'desc');
+        const aftterUpdate = await knex('students')
+          .where({ user_uuid })
+          .first()
+          .orderBy('updated_at', 'desc');
 
-      const data = { cep, street, number, complement, state, city };
+        const data = { cep, street, number, complement, state, city };
 
-      return response.json({
-        data,
-        updated_at: aftterUpdate.updated_at,
-      });
-    }
+        return response.json({
+          data,
+          updated_at: aftterUpdate.updated_at,
+        });
+      }
 
-    if (
-      user.cep !== cep ||
-      user.street !== street ||
-      user.number !== number ||
-      user.complement !== complement ||
-      user.state !== state ||
-      user.city !== city
-    ) {
-      await knex('students').insert({
-        uuid: funcUuid(),
-        first_name: user.first_name,
-        last_name: user.last_name,
-        cpf: user.cpf,
-        birthday: user.birthday,
-        phone_number: user.phone_number,
-        cep,
-        street,
-        number,
-        complement,
-        state,
-        city,
-        user_uuid,
-        created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
-        updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
-      });
+      if (
+        user.cep === cep &&
+        user.street === street &&
+        user.number === number &&
+        user.complement === complement &&
+        user.state === state &&
+        user.city === city
+      ) {
+        await knex('students')
+          .update({
+            updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
+          })
+          .where({ uuid: user.uuid, user_uuid });
 
-      const aftterUpdate = await knex('students')
-        .where({ user_uuid })
-        .first()
-        .orderBy('updated_at', 'desc');
+        const aftterUpdate = await knex('students')
+          .where({ user_uuid })
+          .first()
+          .orderBy('updated_at', 'desc');
 
-      const data = { cep, street, number, complement, state, city };
+        const data = { cep, street, number, complement, state, city };
 
-      return response.json({
-        data,
-        updated_at: aftterUpdate.updated_at,
-      });
+        return response.json({
+          data,
+          updated_at: aftterUpdate.updated_at,
+        });
+      }
+
+      if (
+        user.cep !== cep ||
+        user.street !== street ||
+        user.number !== number ||
+        user.complement !== complement ||
+        user.state !== state ||
+        user.city !== city
+      ) {
+        await knex('students').insert({
+          uuid: funcUuid(),
+          first_name: user.first_name,
+          last_name: user.last_name,
+          cpf: user.cpf,
+          birthday: user.birthday,
+          phone_number: user.phone_number,
+          cep,
+          street,
+          number,
+          complement,
+          state,
+          city,
+          user_uuid,
+          created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
+          updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
+        });
+
+        const aftterUpdate = await knex('students')
+          .where({ user_uuid })
+          .first()
+          .orderBy('updated_at', 'desc');
+
+        const data = { cep, street, number, complement, state, city };
+
+        return response.json({
+          data,
+          updated_at: aftterUpdate.updated_at,
+        });
+      }
     }
   } catch (error) {
-    return response.status(400).json({ error: error.message });
+    if (error.isAxiosError) {
+      // console.log(error.response.data.message);
+      return response.status(400).json({ error: 'CEP invalid' });
+    } else {
+      return response.status(400).json({ error: error.message });
+    }
   }
 });
 
