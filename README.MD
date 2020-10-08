@@ -28,6 +28,7 @@ Este serviço de API foi desenvolvido com a finalidade de resolver o desafio pro
 - Caso queira desfazer as migrations: `> npx knex migrate:rollback --all`
 - Por fim: `> npm run dev` - para o servidor inicializar
 - Obs: Importe o arquivo `Insomnia_2020-10-08` em algum client api de sua peferência para testar as rotas
+- [Link do desafio](https://github.com/provicapital/challenge_node)
 
 ## Rotas
 
