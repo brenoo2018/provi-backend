@@ -7,7 +7,7 @@
 
 ## Provi API
 
-Este serviço de API foi desenvolvido com a finalidade de resolver o desafio proposto pelo João da empresa Provi. O desafio era desenvolver uma api REST em Node que simule alguns dos desafios que a empresa enfrenta todos os dias.
+Este serviço de API foi desenvolvido com a finalidade de resolver o desafio proposto pelo João da empresa Provi. O desafio era desenvolver uma api em Node que simule alguns dos desafios que a empresa enfrenta todos os dias.
 
 ### Ferramentas utilizadas:
 
