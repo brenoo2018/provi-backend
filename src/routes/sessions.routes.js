@@ -38,7 +38,7 @@ sessionsRouter.post('/create', async (request, response) => {
       expiresIn,
     });
 
-    return response.json({ user, token });
+    return response.json({ user, token, next_end_point: '/students/cpf' });
   } catch (error) {
     return response.status(400).json({ error: error.message });
   }

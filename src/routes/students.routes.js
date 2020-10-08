@@ -82,6 +82,7 @@ studentsRouter.post('/cpf', async (request, response) => {
       return response.json({
         data: CpfClean,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/full-name',
       });
     }
 
@@ -100,6 +101,7 @@ studentsRouter.post('/cpf', async (request, response) => {
       return response.json({
         data: CpfClean,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/full-name',
       });
     }
 
@@ -130,6 +132,7 @@ studentsRouter.post('/cpf', async (request, response) => {
       return response.json({
         data: CpfClean,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/full-name',
       });
     }
   } catch (error) {
@@ -165,6 +168,12 @@ studentsRouter.post('/full-name', async (request, response) => {
       return response.status(400).json({ message: 'User does not exists' });
     }
 
+    if (!user.cpf) {
+      return response
+        .status(400)
+        .json({ message: 'Register your CPF first in endpoint /students/cpf' });
+    }
+
     if (!user.first_name && !user.last_name) {
       await knex('students').insert({
         uuid: funcUuid(),
@@ -192,6 +201,7 @@ studentsRouter.post('/full-name', async (request, response) => {
       return response.json({
         data: `${first_name} ${last_name}`,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/birthday',
       });
     }
 
@@ -210,6 +220,7 @@ studentsRouter.post('/full-name', async (request, response) => {
       return response.json({
         data: `${first_name} ${last_name}`,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/birthday',
       });
     }
 
@@ -240,6 +251,7 @@ studentsRouter.post('/full-name', async (request, response) => {
       return response.json({
         data: `${first_name} ${last_name}`,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/birthday',
       });
     }
   } catch (error) {
@@ -269,6 +281,13 @@ studentsRouter.post('/birthday', async (request, response) => {
       return response.status(400).json({ message: 'User does not exists' });
     }
 
+    if (!user.first_name && !user.last_name) {
+      return response.status(400).json({
+        message:
+          'Register your FULL NAME first in endpoint /students/full-name',
+      });
+    }
+
     if (!user.birthday) {
       await knex('students').insert({
         uuid: funcUuid(),
@@ -296,6 +315,7 @@ studentsRouter.post('/birthday', async (request, response) => {
       return response.json({
         data: birthday,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/phone-number',
       });
     }
 
@@ -314,6 +334,7 @@ studentsRouter.post('/birthday', async (request, response) => {
       return response.json({
         data: birthday,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/phone-number',
       });
     }
 
@@ -344,6 +365,7 @@ studentsRouter.post('/birthday', async (request, response) => {
       return response.json({
         data: birthday,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/phone-number',
       });
     }
   } catch (error) {
@@ -371,6 +393,12 @@ studentsRouter.post('/phone-number', async (request, response) => {
 
     if (!user) {
       return response.status(400).json({ message: 'User does not exists' });
+    }
+
+    if (!user.birthday) {
+      return response.status(400).json({
+        message: 'Register your BIRTHDAY first in endpoint /students/birthday',
+      });
     }
 
     const findPhoneNumberUsers = await knex('students')
@@ -496,6 +524,13 @@ studentsRouter.post('/address', async (request, response) => {
 
       if (!user) {
         return response.status(400).json({ message: 'User does not exists' });
+      }
+
+      if (!user.phone_number) {
+        return response.status(400).json({
+          message:
+            'Register your PHONE NUMBER first in endpoint /students/phone-number',
+        });
       }
 
       if (
