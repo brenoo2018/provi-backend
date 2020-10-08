@@ -12,6 +12,7 @@ exports.up = async (knex) =>
     table.string('complement');
     table.string('state');
     table.string('city');
+    table.integer('amount_request');
 
     table.uuid('user_uuid').notNullable().references('uuid').inTable('users');
 

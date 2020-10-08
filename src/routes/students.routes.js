@@ -69,6 +69,7 @@ studentsRouter.post('/cpf', async (request, response) => {
         complement: user.complement,
         state: user.state,
         city: user.city,
+        amount_request: user.amount_request,
         user_uuid,
         created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
         updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -119,6 +120,7 @@ studentsRouter.post('/cpf', async (request, response) => {
         complement: user.complement,
         state: user.state,
         city: user.city,
+        amount_request: user.amount_request,
         user_uuid,
         created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
         updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -188,6 +190,7 @@ studentsRouter.post('/full-name', async (request, response) => {
         complement: user.complement,
         state: user.state,
         city: user.city,
+        amount_request: user.amount_request,
         user_uuid,
         created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
         updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -238,6 +241,7 @@ studentsRouter.post('/full-name', async (request, response) => {
         complement: user.complement,
         state: user.state,
         city: user.city,
+        amount_request: user.amount_request,
         user_uuid,
         created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
         updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -302,6 +306,7 @@ studentsRouter.post('/birthday', async (request, response) => {
         complement: user.complement,
         state: user.state,
         city: user.city,
+        amount_request: user.amount_request,
         user_uuid,
         created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
         updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -352,6 +357,7 @@ studentsRouter.post('/birthday', async (request, response) => {
         complement: user.complement,
         state: user.state,
         city: user.city,
+        amount_request: user.amount_request,
         user_uuid,
         created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
         updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -427,6 +433,7 @@ studentsRouter.post('/phone-number', async (request, response) => {
         complement: user.complement,
         state: user.state,
         city: user.city,
+        amount_request: user.amount_request,
         user_uuid,
         created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
         updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -440,6 +447,7 @@ studentsRouter.post('/phone-number', async (request, response) => {
       return response.json({
         data: phone_number,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/address',
       });
     }
 
@@ -458,6 +466,7 @@ studentsRouter.post('/phone-number', async (request, response) => {
       return response.json({
         data: phone_number,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/address',
       });
     }
 
@@ -475,6 +484,7 @@ studentsRouter.post('/phone-number', async (request, response) => {
         complement: user.complement,
         state: user.state,
         city: user.city,
+        amount_request: user.amount_request,
         user_uuid,
         created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
         updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -488,6 +498,7 @@ studentsRouter.post('/phone-number', async (request, response) => {
       return response.json({
         data: phone_number,
         updated_at: aftterUpdate.updated_at,
+        next_end_point: '/students/address',
       });
     }
   } catch (error) {
@@ -554,6 +565,7 @@ studentsRouter.post('/address', async (request, response) => {
           complement,
           state,
           city,
+          amount_request: user.amount_request,
           user_uuid,
           created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
           updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -569,6 +581,7 @@ studentsRouter.post('/address', async (request, response) => {
         return response.json({
           data,
           updated_at: aftterUpdate.updated_at,
+          next_end_point: '/students/amount_request',
         });
       }
 
@@ -596,6 +609,7 @@ studentsRouter.post('/address', async (request, response) => {
         return response.json({
           data,
           updated_at: aftterUpdate.updated_at,
+          next_end_point: '/students/amount_request',
         });
       }
 
@@ -620,6 +634,7 @@ studentsRouter.post('/address', async (request, response) => {
           complement,
           state,
           city,
+          amount_request: user.amount_request,
           user_uuid,
           created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
           updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
@@ -635,6 +650,7 @@ studentsRouter.post('/address', async (request, response) => {
         return response.json({
           data,
           updated_at: aftterUpdate.updated_at,
+          next_end_point: '/students/amount_request',
         });
       }
     }
@@ -648,4 +664,87 @@ studentsRouter.post('/address', async (request, response) => {
   }
 });
 
+studentsRouter.post('/amount_request', async (request, response) => {
+  try {
+    const schema = Yup.object().shape({
+      amount_request: Yup.string().matches(/^\d*\,{1}\d*$/, 'formato inválido'),
+    });
+
+    await schema.validate(request.body, {
+      abortEarly: false,
+    });
+
+    const { amount_request } = request.body;
+    const { user_uuid } = request.user;
+
+    let amount = amount_request.toString().replace(',', '');
+
+    if (!user_uuid) {
+      return response.status(400).json({ message: 'Uuid not found' });
+    }
+
+    if (!isUuid(user_uuid)) {
+      return response.status(400).json({ message: 'Does not Uuid' });
+    }
+
+    const user = await knex('students')
+      .where({ user_uuid })
+      .first()
+      .orderBy('updated_at', 'desc');
+
+    if (!user) {
+      return response.status(400).json({ message: 'User does not exists' });
+    }
+
+    if (
+      !user.cep &&
+      !user.street &&
+      !user.number &&
+      !user.complement &&
+      !user.state &&
+      !user.city
+    ) {
+      return response.status(400).json({
+        message: 'Register your ADDRESS first in endpoint /students/address',
+      });
+    }
+
+    await knex('students').insert({
+      uuid: funcUuid(),
+      first_name: user.first_name,
+      last_name: user.last_name,
+      cpf: user.cpf,
+      birthday: user.birthday,
+      phone_number: user.phone_number,
+      cep: user.cep,
+      street: user.street,
+      number: user.number,
+      complement: user.complement,
+      state: user.state,
+      city: user.city,
+      amount_request: Number(amount),
+      user_uuid,
+      created_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
+      updated_at: knex.raw(`strftime('%Y-%m-%d %H:%M:%S', 'now')`),
+    });
+
+    const aftterUpdate = await knex('students')
+      .where({ user_uuid })
+      .first()
+      .orderBy('updated_at', 'desc');
+
+    return response.json({
+      data: amount_request,
+      updated_at: aftterUpdate.updated_at,
+    });
+  } catch (error) {
+    if (error instanceof Yup.ValidationError) {
+      const errors = getValidationErrors(error);
+
+      return response.json({ errors });
+    } else {
+      return response.status(400).json({ error: error.message });
+    }
+  }
+});
 module.exports = studentsRouter;
