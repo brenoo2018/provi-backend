@@ -32,16 +32,16 @@ Este serviço de API foi desenvolvido com a finalidade de resolver o desafio pro
 
 ## Rotas
 
-| Requisição | Rota                       | Corpo                                    | Parâmetro                    | Resposta | Descrição                                                         |
-| ---------- | -------------------------- | ---------------------------------------- | ---------------------------- | -------- | ----------------------------------------------------------------- |
-| POST       | `/users/create`            | email, password                          | <div align="center">❌</div> | `object` | Rota de criação de usuário                                        |
-| POST       | `/sessions/create`         | email, password                          | <div align="center">❌</div> | `object` | Rota de login do usuário                                          |
-| POST       | `/students/cpf`            | cpf                                      | <div align="center">❌</div> | `object` | Rota de criação ou atualização do cpf do usuário logado           |
-| POST       | `/students/full-name`      | first_name, last_name                    | <div align="center">❌</div> | `object` | Rota de criação ou atualização do nome completo do usuário logado |
-| POST       | `/students/birthday`       | birthday                                 | <div align="center">❌</div> | `object` | Rota de criação ou atualização do aniversário do usuário logado   |
-| POST       | `/students/phone-number`   | phone_number                             | <div align="center">❌</div> | `object` | Rota de criação ou atualização do telefone do usuário logado      |
-| POST       | `/students/address`        | cep, street,number,complement,state,city | <div align="center">❌</div> | `object` | Rota de criação ou atualização do endereço do usuário logado      |
-| POST       | `/students/amount-request` | amount_request                           | <div align="center">❌</div> | `object` | Rota de criação do pedido do empréstimo do usuário logado         |
+| Requisição | Rota                       | Corpo                                    | Resposta | Descrição                                                         |
+| ---------- | -------------------------- | ---------------------------------------- | -------- | ----------------------------------------------------------------- |
+| POST       | `/users/create`            | email, password                          | `object` | Rota de criação de usuário                                        |
+| POST       | `/sessions/create`         | email, password                          | `object` | Rota de login do usuário                                          |
+| POST       | `/students/cpf`            | cpf                                      | `object` | Rota de criação ou atualização do cpf do usuário logado           |
+| POST       | `/students/full-name`      | first_name, last_name                    | `object` | Rota de criação ou atualização do nome completo do usuário logado |
+| POST       | `/students/birthday`       | birthday                                 | `object` | Rota de criação ou atualização do aniversário do usuário logado   |
+| POST       | `/students/phone-number`   | phone_number                             | `object` | Rota de criação ou atualização do telefone do usuário logado      |
+| POST       | `/students/address`        | cep, street,number,complement,state,city | `object` | Rota de criação ou atualização do endereço do usuário logado      |
+| POST       | `/students/amount-request` | amount_request                           | `object` | Rota de criação do pedido do empréstimo do usuário logado         |
 
 ## Testes
 

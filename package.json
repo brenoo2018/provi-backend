@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest",
-    "dev": "nodemon src/server.js",
-    "knex:migrate": "knex migrate:latest --knexfile knexfile.js migrate:latest",
-    "knex:migrate:rollback": "knex migrate:rollback"
+    "dev": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "",
