@@ -11,7 +11,7 @@ describe('CREATE OR UPDATE ADDRESS', () => {
       .post('/students/address')
       .set(
         'Authorization',
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDIwOTcyMDMsImV4cCI6MTYwMjE4MzYwMywic3ViIjoiZDVmMDA0N2MtYjEzNS00MGJjLTg2YWYtNDk5N2YwOTIzYjY1In0.Z2-LaHC-90nhGHUIjm6MZzj7EMCrIk_AozrTIoM2j-c'
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDIxMjcwMTIsImV4cCI6MTYwMjIxMzQxMiwic3ViIjoiYWQ1ZTc0YzYtZGNmZC00NGY4LWI0MWItNGY5NjI5YWI5NmQ3In0.rBY8I2gSRCYfNvqGSl94YEzcUQe9QO9oHe8Z-7-KTtc'
       )
       .send({
         cep: '64016903',
@@ -24,5 +24,6 @@ describe('CREATE OR UPDATE ADDRESS', () => {
 
     expect(response.body).toHaveProperty('data');
     expect(response.body).toHaveProperty('updated_at');
+    expect(response.body).toHaveProperty('next_end_point');
   });
 });

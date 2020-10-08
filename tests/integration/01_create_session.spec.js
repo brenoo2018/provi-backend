@@ -15,6 +15,7 @@ describe('CREATE SESSION', () => {
 
     expect(response.body).toHaveProperty('user');
     expect(response.body).toHaveProperty('token');
+    expect(response.body).toHaveProperty('next_end_point');
 
     console.log(
       response.body.token,

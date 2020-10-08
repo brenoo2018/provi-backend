@@ -664,7 +664,7 @@ studentsRouter.post('/address', async (request, response) => {
   }
 });
 
-studentsRouter.post('/amount_request', async (request, response) => {
+studentsRouter.post('/amount-request', async (request, response) => {
   try {
     const schema = Yup.object().shape({
       amount_request: Yup.string().matches(/^\d*\,{1}\d*$/, 'formato inválido'),
@@ -747,4 +747,5 @@ studentsRouter.post('/amount_request', async (request, response) => {
     }
   }
 });
+
 module.exports = studentsRouter;
